@@ -1,2 +1,44 @@
 # springboot3-guide
 스프링부트3 백엔드 개발자 가이드
+
+
+### 2장 스프링부트3 시작하기
+스프링부트3 : java 17 버전 사용 필수
+
+java 17 주요변화 
+1. 텍스트 블록
+```java
+ String test = """
+            select * from table
+            where status = on_sale
+            order by price;
+            """;
+```
+2. formatted() 메소드
+```java
+String formatted = """
+            {
+                id : %d
+                name : %s
+            }
+            """.formatted(2, "juice");
+```
+3. 레코드
+레코드는 데이터전달을 목적으로 객체를 빠르고 간편하게 만들어줌.
+레코드는 상속을 할 수 없고, 파라미터에 정의된 필드는 private final로 정의됨. getter 자동생성
+```java 
+public record Beverge(String name, int price) {
+    //name, price 파라미터가 private final 로 정의됩니다.
+}
+
+Beverge juice = new Beverge("juice",3000);
+juice.price() // 3000 
+```
+4. switch - case 문에서 매개변수의 자료형으로 case 분류가능.
+
+
+
+
+
+
+   
