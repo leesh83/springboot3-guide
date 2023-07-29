@@ -36,6 +36,15 @@ juice.price() // 3000
 ```
 4. switch - case 문에서 매개변수의 자료형으로 case 분류가능.
 
+### 3. 스프링부트3 구조 이해하기
+1. 인메모리 db(h2) 더미데이터 입력 -> `resources/data.sql`
+2. `resources/application.yml` 에 인메모리 db 관련 설정
+3. entity, repository, service, controller 클래스 생성
+4. 구동 후 postnman 에서 데이터 확인
+
+### 4. 스프링부트3 와 테스트
+
+   
 
 
 
