@@ -7,9 +7,10 @@
 
 
 ### 2장 스프링부트3 시작하기
-스프링부트3 : java 17 버전 사용 필수
+- 스프링부트3 : java 17 버전 사용 필수
 
-java 17 주요변화 
+- java 17 주요변화    
+- `Java17Test.java`
 1. 텍스트 블록
 ```java
  String test = """
@@ -28,8 +29,9 @@ String formatted = """
             """.formatted(2, "juice");
 ```
 3. 레코드
-레코드는 데이터전달을 목적으로 객체를 빠르고 간편하게 만들어줌.
-레코드는 상속을 할 수 없고, 파라미터에 정의된 필드는 private final로 정의됨. getter 자동생성
+- 레코드는 데이터전달을 목적으로 객체를 빠르고 간편하게 만들어줌.   
+- 레코드는 상속을 할 수 없고, 파라미터에 정의된 필드는 private final로 정의됨. getter 자동생성   
+- `Beverge.record`
 ```java 
 public record Beverge(String name, int price) {
     //name, price 파라미터가 private final 로 정의됩니다.
@@ -47,7 +49,36 @@ juice.price() // 3000
 4. 구동 후 postnman 에서 데이터 확인
 
 ### 4. 스프링부트3 와 테스트
+1. assertThat 메소드들   
+- `JunitTest.java`
+```java
+        boolean flag = true;
+        assertThat(flag).isEqualTo(true);
+        assertThat(flag).isNotEqualTo(false);
 
+        List list = Arrays.asList("송하영","박지원");
+        assertThat(list).contains("송하영");
+        assertThat(list).doesNotContain("이나경");
+        assertThat(list).isNotEmpty();
+
+        String str = "Promise";
+        assertThat(str).startsWith("P");
+        assertThat(str).endsWith("e");
+
+        List emptyList = new ArrayList();
+        assertThat(emptyList).isEmpty();
+
+        int a = 15;
+        assertThat(a).isPositive();
+        int b = -15;
+        assertThat(b).isNegative();
+
+        assertThat(a).isGreaterThan(10);
+        assertThat(a).isLessThan(20);
+```
+2. MemberControllerTest 생성
+- MockMvc를 생성하고 RestController api 검증
+- `MemberControllerTest.java`
    
 
 
