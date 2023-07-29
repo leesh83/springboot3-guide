@@ -80,8 +80,7 @@ juice.price() // 3000
 - MockMvc를 생성하고 RestController api 검증
 - mockMvc.perform(), resultAction.andExpect() 사용
 - `MemberControllerTest.java`
-   
-
+- 다른 계정 수정 풀리퀘스트
 
 
 
