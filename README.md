@@ -76,11 +76,12 @@ juice.price() // 3000
         assertThat(a).isGreaterThan(10);
         assertThat(a).isLessThan(20);
 ```
-2. MemberControllerTest 생성
+2. MockMvc 를 이용하여 api 테스트
 - MockMvc를 생성하고 RestController api 검증
 - mockMvc.perform(), resultAction.andExpect() 사용
 - `MemberControllerTest.java`
    
+### 5. 블로그 기획하고 API만들기 
 
 
 
