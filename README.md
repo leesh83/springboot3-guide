@@ -76,11 +76,58 @@ juice.price() // 3000
         assertThat(a).isGreaterThan(10);
         assertThat(a).isLessThan(20);
 ```
-2. MemberControllerTest 생성
+2. MockMvc 를 이용하여 api 테스트
 - MockMvc를 생성하고 RestController api 검증
 - mockMvc.perform(), resultAction.andExpect() 사용
 - `MemberControllerTest.java`
+```java
+@SpringBootTest
+//@SpringBootApplication 이 있는 클래스 기준 빈들을 생성한다음 테스트용 애플리케이션 컨텍스트 만듬.
+@AutoConfigureMockMvc
+//MockMvc를 생성하고 구성해줌. MockMvc 는 컨트롤러를 테스트할때 사용
+class MemberControllerTest {
+
+    private MockMvc mockMvc;
+
+    @Autowired
+    private WebApplicationContext context;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @BeforeEach
+    public void mockMvcSetUp(){
+        //mockMvc 세팅
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
+                                      .build();
+    }
+
+    @AfterEach
+    public void cleanUp(){
+        memberRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("회원 조회 api 검증")
+    void getAllMembers() throws Exception{
+        //given
+        final String url = "/members";
+        Member savedMember = memberRepository.save(new Member(1L, "이나경"));
+        //인메모리 디비를 사용하므로 h2가 실행되어 있지않아도 테스트 성공
+
+        //when
+        final ResultActions resultActions =
+            mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+        //then
+        resultActions.andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(savedMember.getId()))
+                .andExpect(jsonPath("$[0].name").value(savedMember.getName()));
+    }
+}
+```
+
    
+### 5. 블로그 기획하고 API만들기 
 
 
 
