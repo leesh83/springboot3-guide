@@ -45,8 +45,19 @@ juice.price() // 3000
 ### 3. 스프링부트3 구조 이해하기
 1. 인메모리 DB 에 더미데이터 입력 -> `resources/data.sql`
 2. `resources/application.yml` 에 인메모리 db 관련 설정
-3. entity, repository, service, controller 클래스 생성
-4. 구동 후 postnman 에서 데이터 확인
+```java
+spring:
+  jpa:
+    #콘솔에 SQL 출력
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+    # 테이블 생성 후 data.sql 실행
+    defer-datasource-initialization: true
+```
+4. entity, repository, service, controller 클래스 생성
+5. 구동 후 postnman 에서 데이터 확인
 
 ### 4. 스프링부트3 와 테스트
 1. assertThat 메소드들   
@@ -128,6 +139,25 @@ class MemberControllerTest {
 
    
 ### 5. 블로그 기획하고 API만들기 
+
+1. domain(entity), requestDto, repository, service, restController 생성
+2. application.yml 에 H2 db 접속정보 추가
+```java
+spring:
+  # h2 DB 접속정보
+  datasource:
+    url: jdbc:h2:mem:testdb
+
+  # h2 DB툴을 브라우저에서 사용가능
+  h2:
+    console:
+      enable: true
+```
+3. 구동 후 H2 실행, 브라우저에서 접속 (jdbc:h2:mem:testdb)
+4. POSTMAN에서 POST API 실행, h2 db에 테이블생성 및 데이터 저장 확인   
+![postman](https://github.com/ironmask431/springboot3-guide/assets/48856906/840f7c6c-9b5f-4300-a18d-f708b0d8da25)
+![h2](https://github.com/ironmask431/springboot3-guide/assets/48856906/ac034e32-0d7f-4d4c-8699-433d20c941cf)
+
 
 
 
