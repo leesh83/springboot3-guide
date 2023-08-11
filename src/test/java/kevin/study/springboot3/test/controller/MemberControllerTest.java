@@ -21,6 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 //@SpringBootApplication 이 있는 클래스 기준 빈들을 생성한다음 테스트용 애플리케이션 컨텍스트 만듬.
+//spring context에 등록된 bean 객체들을 사용하려면 위 어노테이션 필요함.    
 @AutoConfigureMockMvc
 //MockMvc를 생성하고 구성해줌. MockMvc 는 컨트롤러를 테스트할때 사용
 class MemberControllerTest {
