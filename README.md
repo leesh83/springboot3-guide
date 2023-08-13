@@ -94,6 +94,7 @@ spring:
 ```java
 @SpringBootTest
 //@SpringBootApplication 이 있는 클래스 기준 빈들을 생성한다음 테스트용 애플리케이션 컨텍스트 만듬.
+//spring context에 등록된 빈 객체들을 테스트에서 사용하려면 이 어노테이션이 필요하다.
 @AutoConfigureMockMvc
 //MockMvc를 생성하고 구성해줌. MockMvc 는 컨트롤러를 테스트할때 사용
 class MemberControllerTest {
@@ -102,6 +103,7 @@ class MemberControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+    //mockMvc를 초기화 할때 필요함.
 
     @Autowired
     private MemberRepository memberRepository;
@@ -141,7 +143,15 @@ class MemberControllerTest {
 ### 5. 블로그 기획하고 API만들기 
 
 1. domain(entity), requestDto, repository, service, restController 생성
-2. application.yml 에 H2 db 접속정보 추가
+2. contorller 메소드의 반환 타입을 ResponseEntity로 감싸서 reponse 의 httpStatus를 설정할 수 있다.
+```java
+public ResponseEntity<Article> addArticle(@RequestBody AddArticleRequest request){
+        Article savedArticle = blogService.save(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                             .body(savedArticle);
+}
+```
+3. application.yml 에 H2 db 접속정보 추가
 ```java
 spring:
   # h2 DB 접속정보
@@ -163,9 +173,22 @@ ex) localhost:8080/h2-console
 ![postman](https://github.com/ironmask431/springboot3-guide/assets/48856906/840f7c6c-9b5f-4300-a18d-f708b0d8da25)
 ![h2](https://github.com/ironmask431/springboot3-guide/assets/48856906/ac034e32-0d7f-4d4c-8699-433d20c941cf)
 
+6. api(controller) 테스트코드 작성
+7. ObjectMapper 를 이용해 java객체 직렬화 (api요청 시 request 객체를 JSON타입 String으로 직렬화하여 request body(content)에 넣음)
+```java
+final AddArticleRequest request = AddArticleRequest.builder()
+                .title(title)
+                .content(content)
+                .build();
 
+//request 객체를 String (JSON 형태)으로 직렬화 
+final String requestBody = objectMapper.writeValueAsString(request);
 
-
+//when
+ResultActions result = mockMvc.perform(post(url)
+                               .contentType(MediaType.APPLICATION_JSON)
+                               .content(requestBody));
+```
 
 
    
