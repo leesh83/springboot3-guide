@@ -2,12 +2,11 @@ package kevin.study.springboot3.blog.dto;
 
 
 import kevin.study.springboot3.blog.domain.Article;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 public class AddArticleRequest {
     private String title;
@@ -18,5 +17,11 @@ public class AddArticleRequest {
                       .title(title)
                       .content(content)
                       .build();
+    }
+
+    @Builder
+    public AddArticleRequest(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }
