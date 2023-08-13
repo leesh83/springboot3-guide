@@ -153,8 +153,13 @@ spring:
     console:
       enable: true
 ```
-3. 구동 후 H2 실행, 브라우저에서 접속 (jdbc:h2:mem:testdb)
-4. POSTMAN에서 POST API 실행, h2 db에 테이블생성 및 데이터 저장 확인   
+3. 구동 후 H2 실행, 브라우저에서 접속
+```
+h2 브라우저 콘솔 접속 시 주의점.
+구동된 서버와 동일한 localhost:port/h2-console 로 접속해서 로그인해야함.
+ex) localhost:8080/h2-console
+```
+5. POSTMAN에서 POST API 실행, h2 db에 테이블생성 및 데이터 저장 확인   
 ![postman](https://github.com/ironmask431/springboot3-guide/assets/48856906/840f7c6c-9b5f-4300-a18d-f708b0d8da25)
 ![h2](https://github.com/ironmask431/springboot3-guide/assets/48856906/ac034e32-0d7f-4d4c-8699-433d20c941cf)
 
