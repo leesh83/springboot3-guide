@@ -31,13 +31,14 @@ class MemberControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+    //mockMvc를 초기화 할때 필요함.
 
     @Autowired
     private MemberRepository memberRepository;
 
     @BeforeEach
     public void mockMvcSetUp(){
-        //mockMvc 세팅
+        //mockMvc 초기화(세팅)
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                                       .build();
     }

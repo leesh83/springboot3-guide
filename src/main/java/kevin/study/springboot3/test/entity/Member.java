@@ -16,7 +16,7 @@ public class Member {
 
 
     //엔티티는 반드시 기본생성자가 있어야 하며 접근 제어자는 public, protected 만 가능하다.
-    //public 보다는 protected가 안전하다.
+    //public 보다는 protected가 안전하므로 protected를 사용한다.
     protected Member() {
     }
 
