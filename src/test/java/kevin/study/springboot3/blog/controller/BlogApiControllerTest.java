@@ -2,7 +2,7 @@ package kevin.study.springboot3.blog.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kevin.study.springboot3.blog.domain.Article;
-import kevin.study.springboot3.blog.dto.AddArticleRequest;
+import kevin.study.springboot3.blog.dto.ArticleRequest;
 import kevin.study.springboot3.blog.repository.BlogRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -20,8 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.assertj.core.api.InstanceOfAssertFactories.array;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -55,10 +55,10 @@ class BlogApiControllerTest {
         final String url = "/api/articles";
         final String title = "제목";
         final String content = "내용";
-        final AddArticleRequest request = AddArticleRequest.builder()
-                                                           .title(title)
-                                                           .content(content)
-                                                           .build();
+        final ArticleRequest request = ArticleRequest.builder()
+                                                     .title(title)
+                                                     .content(content)
+                                                     .build();
 
         //request 객체를 String (JSON 형태)으로 직렬화
         final String requestBody = objectMapper.writeValueAsString(request);
@@ -85,11 +85,8 @@ class BlogApiControllerTest {
         final String url = "/api/articles";
         final String title = "제목";
         final String content = "내용";
-        final Article article = Article.builder()
-                                       .title(title)
-                                       .content(content)
-                                       .build();
-        blogRepository.save(article);
+
+        createSavedArticle(title,content);
 
         //when & then
         mockMvc.perform(get(url)
@@ -105,13 +102,11 @@ class BlogApiControllerTest {
         //given
         final String url = "/api/article/{id}";
         //pathVariable 형태의 URL도 아래와 mockMvc.perform() 에서 사용 가능
+
         final String title = "제목";
         final String content = "내용";
-        final Article article = Article.builder()
-                                       .title(title)
-                                       .content(content)
-                                       .build();
-        final Article savedArticle = blogRepository.save(article);
+
+        final Article savedArticle = createSavedArticle(title,content);
 
         //when
         ResultActions result = mockMvc.perform(get(url, savedArticle.getId()));
@@ -120,8 +115,63 @@ class BlogApiControllerTest {
         result.andExpect(status().isOk())
               .andExpect(jsonPath("$.title").value(title))
               .andExpect(jsonPath("$.content").value(content));
-
     }
 
+    @Test
+    @DisplayName("블로그 단일글 삭제 api 테스트")
+    void deleteArticleTest() throws Exception{
+        //given
+        final String url = "/api/article/{id}";
+        //pathVariable 형태의 URL도 아래와 mockMvc.perform() 에서 사용 가능
 
+        Article savedArticle = createSavedArticle("제목","내용");
+
+        //when
+        mockMvc.perform(delete(url, savedArticle.getId()));
+
+        //then
+        List<Article> list = blogRepository.findAll();
+
+        assertThat(list).isNotEmpty();
+    }
+
+    @Test
+    @DisplayName("블로그 글 수정 api 테스트")
+    void updateArticleTest() throws Exception {
+        //given
+        Article savedArticle = createSavedArticle("제목","내용");
+
+        final String url = "/api/article/{id}";
+        final String title = "수정된 제목";
+        final String content = "수정된 내용";
+
+        final ArticleRequest request = ArticleRequest.builder()
+                                                     .title(title)
+                                                     .content(content)
+                                                     .build();
+
+
+        //when
+        ResultActions result = mockMvc.perform(put(url, savedArticle.getId())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)));
+
+        //then
+        result.andExpect(status().isOk());
+
+        Article articles = blogRepository.findById(savedArticle.getId())
+                                         .orElseThrow(() ->
+                                                 new IllegalArgumentException("not found id : "+savedArticle.getId()));
+
+        assertThat(articles.getTitle()).isEqualTo(title);
+        assertThat(articles.getContent()).isEqualTo(content);
+    }
+
+    private Article createSavedArticle(String title, String content){
+        Article article = Article.builder()
+                      .title(title)
+                      .content(content)
+                      .build();
+        return blogRepository.save(article);
+    }
 }

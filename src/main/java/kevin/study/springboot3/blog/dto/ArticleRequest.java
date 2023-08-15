@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class AddArticleRequest {
+public class ArticleRequest {
     private String title;
     private String content;
 
@@ -20,7 +20,7 @@ public class AddArticleRequest {
     }
 
     @Builder
-    public AddArticleRequest(String title, String content) {
+    public ArticleRequest(String title, String content) {
         this.title = title;
         this.content = content;
     }
