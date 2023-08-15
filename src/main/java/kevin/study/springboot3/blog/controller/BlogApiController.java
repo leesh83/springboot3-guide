@@ -37,14 +37,14 @@ public class BlogApiController {
     }
 
     @DeleteMapping("/api/article/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable Long id){
+    public ResponseEntity<Void> deleteArticle(@PathVariable Long id) {
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/api/article/{id}")
     public ResponseEntity<ArticleResponse> updateArticle(@PathVariable Long id,
-                                                         @RequestBody ArticleRequest request){
+                                                         @RequestBody ArticleRequest request) {
         return ResponseEntity.ok()
-                .body(blogService.update(id, request));
+                             .body(blogService.update(id, request));
     }
 }

@@ -35,14 +35,14 @@ public class BlogService {
         return new ArticleResponse(article);
     }
 
-    public void delete(Long id){
+    public void delete(Long id) {
         blogRepository.deleteById(id);
     }
 
     @Transactional
-    public ArticleResponse update(Long id, ArticleRequest request){
+    public ArticleResponse update(Long id, ArticleRequest request) {
         Article article = blogRepository.findById(id)
-                                        .orElseThrow(() -> new IllegalArgumentException("not found id : "+id));
+                                        .orElseThrow(() -> new IllegalArgumentException("not found id : " + id));
         article.update(request.getTitle(), request.getContent());
         return new ArticleResponse(article);
     }

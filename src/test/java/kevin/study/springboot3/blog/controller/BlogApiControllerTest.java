@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import static org.assertj.core.api.InstanceOfAssertFactories.array;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -86,7 +85,7 @@ class BlogApiControllerTest {
         final String title = "제목";
         final String content = "내용";
 
-        createSavedArticle(title,content);
+        createSavedArticle(title, content);
 
         //when & then
         mockMvc.perform(get(url)
@@ -106,7 +105,7 @@ class BlogApiControllerTest {
         final String title = "제목";
         final String content = "내용";
 
-        final Article savedArticle = createSavedArticle(title,content);
+        final Article savedArticle = createSavedArticle(title, content);
 
         //when
         ResultActions result = mockMvc.perform(get(url, savedArticle.getId()));
@@ -119,12 +118,12 @@ class BlogApiControllerTest {
 
     @Test
     @DisplayName("블로그 단일글 삭제 api 테스트")
-    void deleteArticleTest() throws Exception{
+    void deleteArticleTest() throws Exception {
         //given
         final String url = "/api/article/{id}";
         //pathVariable 형태의 URL도 아래와 mockMvc.perform() 에서 사용 가능
 
-        Article savedArticle = createSavedArticle("제목","내용");
+        Article savedArticle = createSavedArticle("제목", "내용");
 
         //when
         mockMvc.perform(delete(url, savedArticle.getId()));
@@ -139,7 +138,7 @@ class BlogApiControllerTest {
     @DisplayName("블로그 글 수정 api 테스트")
     void updateArticleTest() throws Exception {
         //given
-        Article savedArticle = createSavedArticle("제목","내용");
+        Article savedArticle = createSavedArticle("제목", "내용");
 
         final String url = "/api/article/{id}";
         final String title = "수정된 제목";
@@ -161,17 +160,17 @@ class BlogApiControllerTest {
 
         Article articles = blogRepository.findById(savedArticle.getId())
                                          .orElseThrow(() ->
-                                                 new IllegalArgumentException("not found id : "+savedArticle.getId()));
+                                                 new IllegalArgumentException("not found id : " + savedArticle.getId()));
 
         assertThat(articles.getTitle()).isEqualTo(title);
         assertThat(articles.getContent()).isEqualTo(content);
     }
 
-    private Article createSavedArticle(String title, String content){
+    private Article createSavedArticle(String title, String content) {
         Article article = Article.builder()
-                      .title(title)
-                      .content(content)
-                      .build();
+                                 .title(title)
+                                 .content(content)
+                                 .build();
         return blogRepository.save(article);
     }
 }
