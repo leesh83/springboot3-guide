@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -55,9 +56,9 @@ class BlogApiControllerTest {
         final String title = "제목";
         final String content = "내용";
         final AddArticleRequest request = AddArticleRequest.builder()
-                .title(title)
-                .content(content)
-                .build();
+                                                           .title(title)
+                                                           .content(content)
+                                                           .build();
 
         //request 객체를 String (JSON 형태)으로 직렬화
         final String requestBody = objectMapper.writeValueAsString(request);
@@ -85,19 +86,42 @@ class BlogApiControllerTest {
         final String title = "제목";
         final String content = "내용";
         final Article article = Article.builder()
-                .title(title)
-                .content(content)
-                .build();
+                                       .title(title)
+                                       .content(content)
+                                       .build();
         blogRepository.save(article);
 
         //when & then
         mockMvc.perform(get(url)
-                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].title").value(title))
+                       .accept(MediaType.APPLICATION_JSON))
+               .andExpect(status().isOk())
+               .andExpect(jsonPath("$[0].title").value(title))
                .andExpect(jsonPath("$[0].content").value(content));
     }
 
+    @Test
+    @DisplayName("블로그 단일글 조회 api 테스트")
+    void findArticleTest() throws Exception {
+        //given
+        final String url = "/api/article/{id}";
+        //pathVariable 형태의 URL도 아래와 mockMvc.perform() 에서 사용 가능
+        final String title = "제목";
+        final String content = "내용";
+        final Article article = Article.builder()
+                                       .title(title)
+                                       .content(content)
+                                       .build();
+        final Article savedArticle = blogRepository.save(article);
+
+        //when
+        ResultActions result = mockMvc.perform(get(url, savedArticle.getId()));
+
+        //then
+        result.andExpect(status().isOk())
+              .andExpect(jsonPath("$.title").value(title))
+              .andExpect(jsonPath("$.content").value(content));
+
+    }
 
 
 }
