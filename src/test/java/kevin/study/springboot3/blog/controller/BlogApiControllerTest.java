@@ -88,8 +88,7 @@ class BlogApiControllerTest {
         createSavedArticle(title, content);
 
         //when & then
-        mockMvc.perform(get(url)
-                       .accept(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON))
                .andExpect(status().isOk())
                .andExpect(jsonPath("$[0].title").value(title))
                .andExpect(jsonPath("$[0].content").value(content));
