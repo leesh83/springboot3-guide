@@ -192,3 +192,13 @@ ResultActions result = mockMvc.perform(post(url)
 8. blog CRUD Api 생성 + 테스트코드 완료
 
    
+### 7. 스프링 시큐리티로 로그인,로그아웃 회원가입 만들기
+
+1. build.gradle 의존성 추가
+
+```java
+implementation 'org.springframework.boot:spring-boot-starter-security'
+testImplementation 'org.springframework.security:spring-security-test'
+```
+2. UserDetails를 상속받아 User 엔티티 만들기 > `User.java`
+   
