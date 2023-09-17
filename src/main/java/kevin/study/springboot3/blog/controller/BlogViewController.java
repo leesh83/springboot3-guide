@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class BlogViewController {
 
-    @GetMapping("/article")
-    public String article(){
-        return "article";
+    @GetMapping("/articles")
+    public String article() {
+        return "articles";
     }
 }
