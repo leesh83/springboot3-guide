@@ -194,11 +194,29 @@ ResultActions result = mockMvc.perform(post(url)
    
 ### 7. 스프링 시큐리티로 로그인,로그아웃 회원가입 만들기
 
-1. build.gradle 의존성 추가
+1. 사전지식
+* 스프링 시큐리티는 스프링키반의 애플리케이션 보안(인증,인가,권한)을 담당하는 스프링 하위 프레임워크이다.
+* 인증(authentication) : 로그인시 사용자 확인 /  인가(authorization) : 사용자의 권한 확인
+* 스프링시큐리티는 다음 공격을 방어 가능
+* CSRF공격 : 사용자의 권한을 가지고 특정 동작 유도, 세션고정공격 : 사용자의 인증정보 탈취, 변조
+* 스프링시큐리티는 다양한 필터구조로 동작   
+
+4. build.gradle 의존성 추가
 
 ```java
 implementation 'org.springframework.boot:spring-boot-starter-security'
 testImplementation 'org.springframework.security:spring-security-test'
 ```
-2. UserDetails를 상속받아 User 엔티티 만들기 > `User.java`
+2. 스프링시큐리티 UserDetails를 implements 한 User 엔티티 만들기 > `User.java`
+3. UserRepository 인터페이스 생성 > `UserRepository`
+4. 스프링시큐리티 UserDetailsService 를 구현한 UserDetailService 생성 > `UserDetailService.java`
+5. 스프링시큐리티 설정 파일 생성 > `WebSecurityConfig.java`
+* 이 파일은 스프링부트 버전별로 각각 다른 부분들이 있다. 이프로젝트는 부트 `3.0.2` 기준!
+* `configure()` > 시큐리티 기능 비활성화 할 경로 지정 >
+* `filterChain()`  > url 별 인증, 인가 설정, 로그인, 로그아웃 후 이동할 url 지정
+* `authenticationManager()` > 인증관리자 관련 설정 : 사용자정보를 가져올 서비스지정. 패스워드 인코더 지정
+* 패스워드 인코더를 Bean으로 등록
+
+7. 회원가입을 처리할 `AddUserRequest.java`, `UserService.java`, `UserApiController.java` 생성
+8. 회원가입 뷰 컨트롤러, 뷰 파일 생성, `UserViewController.java`, `login.html`, `signup.html`, `articles.html`   
    
