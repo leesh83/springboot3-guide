@@ -126,7 +126,7 @@ class MemberControllerTest {
         //given
         final String url = "/members";
         Member savedMember = memberRepository.save(new Member(1L, "이나경"));
-        //인메모리 디비를 사용하므로 h2가 실행되어 있지않아도 테스트 성공
+        //h2 database dependencies를 추가하였기 때문에 인메모리 DB 저장 테스트 가능.
 
         //when
         final ResultActions resultActions =
