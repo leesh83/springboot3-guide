@@ -35,15 +35,15 @@ public class TokenProvider {
         return makeToken(expiry, user);
     }
 
-    //jwt 토큰 생성 - 헤더,내용,서명에 들어갈 정보 입력
+    //jwt 토큰 생성 - 헤더,내용,서명에 들어갈 정보 입력 (인자 : 만료시간, 유저정보)
     private String makeToken(Date expiry, User user) {
         return Jwts.builder()
                    .setHeaderParam(Header.TYPE, Header.JWT_TYPE) //헤더 : jwt로 설정
                    .setIssuer(issuer)
                    .setIssuedAt(new Date()) // 내용 iat
                    .setExpiration(expiry) // 내용 exp (토큰 유효일시)
-                   .setSubject(user.getEmail()) // 내용 sub
-                   .claim("id", user.getId()) // 클레임id 로 user.id 설정 (유저 식별용)
+                   .setSubject(user.getEmail()) // 내용 sub (user.email 로 설정 - 유저 식별용)
+                   .claim("id", user.getId()) // 클레임 "id" 로 user.id 설정 (유저 식별용)
                    .signWith(SignatureAlgorithm.HS256, secretKey)
                    // 서명 : secretKey 로 HS256 방식으로 암호화
                    .compact();
@@ -82,6 +82,7 @@ public class TokenProvider {
         Set<SimpleGrantedAuthority> authorities = Collections.singleton(
                 new SimpleGrantedAuthority("ROLE_USER"));
 
+        //첫번째 인자는 만든 User클래스가 아니라, security의 User클래스!
         return new UsernamePasswordAuthenticationToken(
                 new org.springframework.security.core.userdetails.User(
                         claims.getSubject(), "", authorities),
