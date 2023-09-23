@@ -14,7 +14,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/members")
-    public List<Member> getAllMembers(){
+    public List<Member> getAllMembers() {
         return memberService.getAllMember();
     }
 }

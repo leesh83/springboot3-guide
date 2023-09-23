@@ -37,20 +37,20 @@ class MemberControllerTest {
     private MemberRepository memberRepository;
 
     @BeforeEach
-    public void mockMvcSetUp(){
+    public void mockMvcSetUp() {
         //mockMvc 초기화(세팅)
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                                       .build();
     }
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         memberRepository.deleteAll();
     }
 
     @Test
     @DisplayName("회원 조회 api 검증")
-    void getAllMembers() throws Exception{
+    void getAllMembers() throws Exception {
         //given
         final String url = "/members";
         Member savedMember = memberRepository.save(new Member(1L, "이나경"));
@@ -58,7 +58,7 @@ class MemberControllerTest {
 
         //when
         final ResultActions resultActions =
-            mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+                mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
         //then
         resultActions.andExpect(status().isOk())
                      .andExpect(jsonPath("$[0].id").value(savedMember.getId()))

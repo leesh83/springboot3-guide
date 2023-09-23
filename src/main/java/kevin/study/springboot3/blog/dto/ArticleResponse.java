@@ -11,7 +11,7 @@ public class ArticleResponse {
     private final String content;
 
     @Builder
-    public ArticleResponse(Article article){
+    public ArticleResponse(Article article) {
         this.title = article.getTitle();
         this.content = article.getContent();
     }

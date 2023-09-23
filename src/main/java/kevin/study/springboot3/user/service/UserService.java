@@ -16,7 +16,6 @@ public class UserService {
 
     @Transactional
     public Long save(AddUserRequest request) {
-        System.out.println("check request = " + request.toString());
         return userRepository.save(User.builder()
                                        .email(request.getEmail())
                                        .password(bCryptPasswordEncoder.encode(request.getPassword()))
