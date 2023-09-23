@@ -38,6 +38,7 @@ public class WebSecurityConfig {
                    .loginPage("/login")
                    .defaultSuccessUrl("/articles") //로그인 성공시 이동할 url
                    .and()
+
                    .logout() // 로그아웃 설정
                    .logoutSuccessUrl("/login") //로그아웃 성공시 이동할 url
                    .invalidateHttpSession(true) //로그아웃 후 세션 전체 삭제 설정
