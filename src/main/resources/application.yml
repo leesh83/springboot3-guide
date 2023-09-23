@@ -17,3 +17,7 @@ spring:
     console:
       enable: true
 
+jwt:
+  issuer: ironmask431@gmail.com
+  secretKey: study-springboot
+
