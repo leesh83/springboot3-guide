@@ -44,8 +44,7 @@ public class TokenProvider {
                    .setExpiration(expiry) // 내용 exp (토큰 유효일시)
                    .setSubject(user.getEmail()) // 내용 sub (user.email 로 설정 - 유저 식별용)
                    .claim("id", user.getId()) // 클레임 "id" 로 user.id 설정 (유저 식별용)
-                   .signWith(SignatureAlgorithm.HS256, secretKey)
-                   // 서명 : secretKey 로 HS256 방식으로 암호화
+                   .signWith(SignatureAlgorithm.HS256, secretKey) // 서명 : secretKey 로 HS256 방식으로 암호화
                    .compact();
     }
 
