@@ -23,7 +23,7 @@ public class TokenProvider {
 
     public TokenProvider(@Value("${jwt.issuer}") String issuer,
                          @Value("${jwt.secretKey}") String secretKey) {
-        //@Value 어노테이션으로 applicationl.yml 값 조회
+        //@Value 어노테이션으로 applicationl.yml 의 프로퍼티 값 조회
         this.issuer = issuer;
         this.secretKey = secretKey;
     }
@@ -69,7 +69,7 @@ public class TokenProvider {
     }
 
     //토큰 클레임에서 id(userId) 조회
-    private Long getUserId(String token) {
+    public Long getUserId(String token) {
         return getClaims(token)
                 .get("id", Long.class);
     }
@@ -83,8 +83,7 @@ public class TokenProvider {
 
         //첫번째 인자는 만든 User클래스가 아니라, security의 User클래스!
         return new UsernamePasswordAuthenticationToken(
-                new org.springframework.security.core.userdetails.User(
-                        claims.getSubject(), "", authorities),
+                new org.springframework.security.core.userdetails.User(claims.getSubject(), "", authorities),
                 token, authorities);
     }
 
