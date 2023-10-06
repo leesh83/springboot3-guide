@@ -48,7 +48,7 @@ public class TokenProviderTest {
                           .getBody()
                           .get("id", Long.class);
 
-        Assertions.assertEquals(testUser.getId(), userId, "testUser의 id와 생성된 token에서 파싱한 id가 같아야 한다.");
+        Assertions.assertEquals(testUser.getId(), userId, "토큰 생성시 사용한 testUser의 id와 생성된token에서 파싱한 id가 같아야 한다.");
     }
 
     @Test
@@ -65,7 +65,7 @@ public class TokenProviderTest {
         Boolean result = tokenProvider.validToken(token);
 
         //then
-        Assertions.assertEquals(result, false);
+        Assertions.assertEquals(result, false, "만료된 토큰이므로 토큰 유효성검사에서 false가 리턴되어야 한다.");
     }
 
 
@@ -85,7 +85,7 @@ public class TokenProviderTest {
 
         //then
         String authenticationUsername = ((UserDetails) authentication.getPrincipal()).getUsername();
-        Assertions.assertEquals(userEmail, authenticationUsername);
+        Assertions.assertEquals(userEmail, authenticationUsername,"토큰 생성시 subject로 사용한 userEmail과 가져온 인증정보의 username이 일치해야 한다.");
     }
 
     @Test
