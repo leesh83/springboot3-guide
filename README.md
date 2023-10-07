@@ -322,7 +322,81 @@ testImplementation 'org.springframework.security:spring-security-test'
 
       * 서명 : 해당토큰이 조작,변경되지 않았음을 확인하는 용도.  헤더의 인코딩값과 내용의 인코딩값을 합한 후
       * 서버만이 가지고 있는 비밀키로 암호화하여 해시값을 생성함. 
-      
+
+      * 토큰의 위험성 : 만약 제3자가 토큰을 탈취 하여 사용할 경우 서버에서는 제3자의 요청인지 구분이 불가능함.
+      * 토큰의 유효기한 : 그래서 토큰의 유효기한을 설정하여 이러한 문제를 어느정도보완함. 그러나 유효기한이 너무 짧으면
+      * 사용자 입장에서 자주 로그인을 해줘야하기때문에 불편함. 이런 문제를 보완하고자 리프레쉬토큰이 탄생함.
+      * 리프레쉬토큰 : 액세스토큰이 만료되었을 때 새로은 액세스토큰을 발급하기위해 사용됨.
+     
+      * 리프레쉬 토큰의 흐름
+
+        ```
+        1. 클라이언트 -> 서버 : 인증요청(로그인)
+        2. 서버 -> 클라이언트 : 액세스토큰, 리프레쉬토큰 발급
+        3. 서버 : 발급한 리프레쉬 토큰 db에 저장 (이부분은 좀 아쉽다.)
+        4. 클라이언트 : 발급받은 엑세스토큰, 리프레쉬토큰 쿠키에 저장
+        5. 클라이언트 -> 서버 : 액세스토큰으로 요청
+        6. 서버 -> 클라이언트 :  토큰 검증 후 응답
+        7. 클라이언트 -> 서버 : 만료된 액세스토큰으로 요청
+        8. 서버 -> 클라이언트 :  토큰 만료 응답
+        9. 클라이언트 -> 서버 : 리프레쉬토큰과 함께 엑세스토큰 발급 요청
+        10. 서버 : 리프레시 토큰 유효성 검사 (db에 저장해둔 리프레시토큰과 일치하는지 확인)
+        11. 서버 -> 클라이언트 : 엑세스토큰 신규 발급
+        ```
+
+2. JWT 서비스 구현하기
+   1. 의존성 추가하기 > `build.gradle`
+      ```
+      //jwt 라이브러리 // mavenRepository 에서 조회 (JSON Web Token Support For The JVM)
+      implementation 'io.jsonwebtoken:jjwt:0.9.1'
+      // xml문서와 JAVA객체 매핑 자동화  // mavenRepository 에서 조회
+      implementation 'javax.xml.bind:jaxb-api:2.3.1'
+      ```
+
+   2. 토큰 제공자 추가
+      * 발급자, 비밀키 정보 설정 > application.yml
+        
+         ```
+         jwt:
+           issuer: test@gmail.com
+           secretKey: study-springboot
+         ```
+
+      * application.yml 에 지정한 값 조회하기위한 클래스 생성 > `JwtProperties.java`
+
+        ```java
+        * 프로퍼티의 값을 조회하는 방법
+
+        1. 방법1
+        - 클래스 생성 후 클래스에 @ConfigurationProperties("jwt")  선언 (@Setter 필수) 후 빈등록
+
+         @Setter
+         @Getter
+         @Component
+         @ConfigurationProperties("jwt") // application.yml의 "jwt" 프로퍼티값을 읽어옴
+         public class JwtProperties {
+             private String issuer;
+             private String secretKey;
+         }
+
+        2. 방법2
+        - 클래스 생성자에서 @Value 어노테이션 사용
+
+        public TokenProvider(@Value("${jwt.issuer}") String issuer,
+                             @Value("${jwt.secretKey}") String secretKey) {
+           //@Value 어노테이션으로 applicationl.yml 의 프로퍼티 값 조회
+           this.issuer = issuer;
+           this.secretKey = secretKey;
+        }
+        
+        ```
+      * 토큰 생성, 유효성검사, 토큰에서 정보가져오기 기능을 위한 클래스생성 > `TokenProvier.java`
+      * TokenProvier 테스트 클래스 생성 > `TokenProviderTest.java`
+      * ![캡처](https://github.com/ironmask431/springboot3-guide/assets/48856906/96c46c6f-e4c6-4072-8a5b-c5bc96c3de95)
+
+        
+
+        
 
       
    
