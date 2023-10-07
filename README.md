@@ -240,6 +240,7 @@ testImplementation 'org.springframework.security:spring-security-test'
 ### 9. JWT로 로그인/로그아웃 구현하기
 
 1. 사전지식 : 토큰 기반 인증
+   
    1. 토큰 기반 인증이란?
       * 대표적인 사용자 인증확인 방법 : 서버기반 인증 / 토큰 기반 인증
       * 스프링시큐리티에서는 기본적으로 세션기반 인증제공 (8장 로그인,로그아웃)
