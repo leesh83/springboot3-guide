@@ -392,7 +392,7 @@ testImplementation 'org.springframework.security:spring-security-test'
         ```
       * 토큰 생성, 유효성검사, 토큰에서 정보가져오기 기능을 위한 클래스생성 > `TokenProvier.java`
       * TokenProvier 테스트 클래스 생성 > `TokenProviderTest.java`
-      * ![캡처](https://github.com/ironmask431/springboot3-guide/assets/48856906/96c46c6f-e4c6-4072-8a5b-c5bc96c3de95)
+        ![캡처](https://github.com/ironmask431/springboot3-guide/assets/48856906/96c46c6f-e4c6-4072-8a5b-c5bc96c3de95)
 
         
 
