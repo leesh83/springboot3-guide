@@ -15,7 +15,7 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 
 //스프링 시큐리티 설정은 버전별로 설정에 차이가 있음.
 //현재코드는 springBoot 3.0.2 버전기준이고 3.1.2 버전에서는 구동시 에러발생함.
-@Configuration
+@Configuration //@Bean 이 등록된 객체들을 스프링컨테이너에 등록하기 위해 설정.
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final UserDetailService userDetailService;
