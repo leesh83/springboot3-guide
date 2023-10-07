@@ -1,3 +1,3 @@
-insert into member (id, name) values (1,'송하영');
-insert into member (id, name) values (2,'박지원');
-insert into member (id, name) values (3,'이나경');
+INSERT INTO ARTICLE (TITLE, CONTENT) VALUES ('제목1','내용1');
+INSERT INTO ARTICLE (TITLE, CONTENT) VALUES ('제목2','내용2');
+INSERT INTO ARTICLE (TITLE, CONTENT) VALUES ('제목3','내용3');

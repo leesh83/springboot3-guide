@@ -21,41 +21,44 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 //@SpringBootApplication 이 있는 클래스 기준 빈들을 생성한다음 테스트용 애플리케이션 컨텍스트 만듬.
+//spring context에 등록된 빈 들을 가져와서 테스트에서 사용하려면 이 어노테이션이 필요하다.
 @AutoConfigureMockMvc
-//MockMvc를 생성하고 구성해줌. MockMvc 는 컨트롤러를 테스트할때 사용
+//MockMvc를 생성하고 구성해줌. MockMvc 는 컨트롤러 api를 테스트할때 사용
 class MemberControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private WebApplicationContext context;
+    //mockMvc를 초기화 할때 필요함.
 
     @Autowired
     private MemberRepository memberRepository;
 
     @BeforeEach
-    public void mockMvcSetUp(){
-        //mockMvc 세팅
+    public void mockMvcSetUp() {
+        //mockMvc 초기화(세팅)
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context)
                                       .build();
     }
 
     @AfterEach
-    public void cleanUp(){
+    public void cleanUp() {
         memberRepository.deleteAll();
     }
 
     @Test
     @DisplayName("회원 조회 api 검증")
-    void getAllMembers() throws Exception{
+    void getAllMembers() throws Exception {
         //given
         final String url = "/members";
         Member savedMember = memberRepository.save(new Member(1L, "이나경"));
-        //인메모리 디비를 사용하므로 h2가 실행되어 있지않아도 테스트 성공
+        //h2 database dependencies를 추가하였기 때문에 인메모리 DB 저장 테스트 가능.
 
         //when
         final ResultActions resultActions =
-            mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
+                mockMvc.perform(get(url).accept(MediaType.APPLICATION_JSON));
         //then
         resultActions.andExpect(status().isOk())
                      .andExpect(jsonPath("$[0].id").value(savedMember.getId()))

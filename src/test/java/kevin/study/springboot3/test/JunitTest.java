@@ -13,12 +13,12 @@ public class JunitTest {
 
     @Test
     @DisplayName("assertThat 테스트")
-    public void testAssertThat(){
+    public void testAssertThat() {
         boolean flag = true;
         assertThat(flag).isEqualTo(true);
         assertThat(flag).isNotEqualTo(false);
 
-        List list = Arrays.asList("송하영","박지원");
+        List list = Arrays.asList("송하영", "박지원");
         assertThat(list).contains("송하영");
         assertThat(list).doesNotContain("이나경");
         assertThat(list).isNotEmpty();
