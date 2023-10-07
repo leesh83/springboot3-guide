@@ -205,7 +205,7 @@ ResultActions result = mockMvc.perform(post(url)
 8. blog CRUD Api 생성 + 테스트코드 완료
 
    
-### 7. 스프링 시큐리티로 로그인,로그아웃 회원가입 만들기
+### 8. 스프링 시큐리티로 로그인,로그아웃 회원가입 만들기
 
 1. 사전지식
 * 스프링 시큐리티는 스프링키반의 애플리케이션 보안(인증,인가,권한)을 담당하는 스프링 하위 프레임워크이다.
@@ -237,5 +237,169 @@ testImplementation 'org.springframework.security:spring-security-test'
 ![회원가입](https://github.com/ironmask431/springboot3-guide/assets/48856906/a63bc89e-deed-471e-9826-9e99619ae8d4)
 ![로그인성공](https://github.com/ironmask431/springboot3-guide/assets/48856906/4dee8e64-6227-438c-be13-018a0eaefc27)
 
+### 9. JWT로 로그인/로그아웃 구현하기
+
+1. 사전지식 : 토큰 기반 인증
+   
+   1. 토큰 기반 인증이란?
+      * 대표적인 사용자 인증확인 방법 : 서버기반 인증 / 토큰 기반 인증
+      * 스프링시큐리티에서는 기본적으로 세션기반 인증제공 (8장 로그인,로그아웃)
+      * 토큰을 전달하고 인증받는 과정
+
+        ```
+        1. 클라 -> 서버 : 로그인요청(id/pw)
+        2. 서버 -> 클라 : 토큰 생성 후 응답
+        3. 클라 : 토큰 저장(쿠키)
+        4. 클라 -> 서버 : 토큰과 함께 요청
+        5. 서버 : 토큰 검증.
+        6. 응답   
+        ```
+
+        ```
+        * 토큰 기반 인증의 특징
+
+        1. 무상태성 : 토큰이 서버가 아닌 클라이언트에 저장됨. 서버에서는 클라의 인증정보를
+        저장하거나 유지하지 않아도 되므로 무상태로 서버자원없이 효율적인 검증 가능 (그러나 리프레쉬 토큰은 서버에 저장필요...ㅠ)
+
+        2. 확장성 : 인증정보 상태관리를 하지 않아도 되므로 서버확장에 유리함.
+        결제 서버와 주문서버가 분리되어 있을 경우 세션인증은 각각의 서버에 따로 인증을 해야 하지만, 토큰 인증은 하나의 토큰으로
+        결제서버와 주문서버 둘다 인증이 가능하다. 다른 시스템에 접근해 로그인방식을 확장할 수도 있고 다른 서비스에 권한공유도 가능
+
+        3. 무결성 : 토큰을 발급 한 후 토큰정보를 변경하는 행위를 할수 없으므로 무결성 보장
+        토큰의 내용을 조금이라도 바꾸면, 서버의 토큰 유효성 검증에서 실패함.
+        (서버만이 가지고 있는 KEY로 암호화된 서명(signiture)을 검증)
+        ```
+   2. JWT
+      * jwt를 이용해 인증하려면 HTTP request의 헤더의 Authorization 값에 아래값을 넣어야함.
+
+        ```
+        Bearer 토큰값
+        ```
+      * JWT의 구조
+
+         ```
+         헤더.내용.서명
+         aaaaa.bbbbb.cccccc
+         ```
+
+      * 헤더 : 토큰타입과 해싱알고리즘 지정
+
+         ```
+         {
+            "typ": "JWT"   // 토큰의 타입지정 JWT고정
+            "alg": "HS256" // 해싱 알고리즘 지정
+         }
+         ```
+
+      * 내용 : 토큰과 관련된 정보. 내용의 한파트를 claim 이라고 부르며, key,value 한쌍으로 되어있음.
+      * claim은 등록된 클레임, 공개클레임, 비공개클레임으로 나눌 수 있다.
+        
+         ```
+         iss : 토큰 발급자 (issuer)
+         sub : 토큰제목 (subject)
+         aud : 토큰 대상자 
+         exp : 토큰 만료시간 (expire) numbericDate 형식 (ex : 1480849147370)
+         nbf : 토큰 활성시간. (not before) 이 시간이 지난 후부터 토큰사용 가능
+         iat : 토큰 발급일시 (issued at)
+         jti : jwt 고유식별자. 주로 일회용 토큰에 사용함.
+         ```
+
+      * 공개클래임은 공개되어도 상관없는 클레임. 충돌을 방지할수있도록 보통 URI로 지음.
+      * 비공개클레임은 공개되면 안되는 클레임.  클라이언트와 서버간의 통신에 이용됨.
+     
+      * 내용 예시
+
+         ```
+         {
+            "iss": "test@naver.com", // 등록된 클레임 (발급자)
+            "iat": 1622370878, //등록된 클레임 (발급일시)
+            "exp": 1622372678, //등록된 클레임 (만료일시)
+            "https://www.test.com/is_admin" : true, //공개 클레임
+            "email": "user@naver.com" // 비공개 클래임 
+            "hello": "안녕하세요" // 비공개 클래임
+         }
+         ```
+
+      * 서명 : 해당토큰이 조작,변경되지 않았음을 확인하는 용도.  헤더의 인코딩값과 내용의 인코딩값을 합한 후
+      * 서버만이 가지고 있는 비밀키로 암호화하여 해시값을 생성함. 
+
+      * 토큰의 위험성 : 만약 제3자가 토큰을 탈취 하여 사용할 경우 서버에서는 제3자의 요청인지 구분이 불가능함.
+      * 토큰의 유효기한 : 그래서 토큰의 유효기한을 설정하여 이러한 문제를 어느정도보완함. 그러나 유효기한이 너무 짧으면
+      * 사용자 입장에서 자주 로그인을 해줘야하기때문에 불편함. 이런 문제를 보완하고자 리프레쉬토큰이 탄생함.
+      * 리프레쉬토큰 : 액세스토큰이 만료되었을 때 새로은 액세스토큰을 발급하기위해 사용됨.
+     
+      * 리프레쉬 토큰의 흐름
+
+        ```
+        1. 클라이언트 -> 서버 : 인증요청(로그인)
+        2. 서버 -> 클라이언트 : 액세스토큰, 리프레쉬토큰 발급
+        3. 서버 : 발급한 리프레쉬 토큰 db에 저장 (이부분은 좀 아쉽다.)
+        4. 클라이언트 : 발급받은 엑세스토큰, 리프레쉬토큰 쿠키에 저장
+        5. 클라이언트 -> 서버 : 액세스토큰으로 요청
+        6. 서버 -> 클라이언트 :  토큰 검증 후 응답
+        7. 클라이언트 -> 서버 : 만료된 액세스토큰으로 요청
+        8. 서버 -> 클라이언트 :  토큰 만료 응답
+        9. 클라이언트 -> 서버 : 리프레쉬토큰과 함께 엑세스토큰 발급 요청
+        10. 서버 : 리프레시 토큰 유효성 검사 (db에 저장해둔 리프레시토큰과 일치하는지 확인)
+        11. 서버 -> 클라이언트 : 엑세스토큰 신규 발급
+        ```
+
+2. JWT 서비스 구현하기
+   1. 의존성 추가하기 > `build.gradle`
+      ```
+      //jwt 라이브러리 // mavenRepository 에서 조회 (JSON Web Token Support For The JVM)
+      implementation 'io.jsonwebtoken:jjwt:0.9.1'
+      // xml문서와 JAVA객체 매핑 자동화  // mavenRepository 에서 조회
+      implementation 'javax.xml.bind:jaxb-api:2.3.1'
+      ```
+
+   2. 토큰 제공자 추가
+      * 발급자, 비밀키 정보 설정 > application.yml
+        
+         ```
+         jwt:
+           issuer: test@gmail.com
+           secretKey: study-springboot
+         ```
+
+      * application.yml 에 지정한 값 조회하기위한 클래스 생성 > `JwtProperties.java`
+
+        ```java
+        * 프로퍼티의 값을 조회하는 방법
+
+        1. 방법1
+        - 클래스 생성 후 클래스에 @ConfigurationProperties("jwt")  선언 (@Setter 필수) 후 빈등록
+
+         @Setter
+         @Getter
+         @Component
+         @ConfigurationProperties("jwt") // application.yml의 "jwt" 프로퍼티값을 읽어옴
+         public class JwtProperties {
+             private String issuer;
+             private String secretKey;
+         }
+
+        2. 방법2
+        - 클래스 생성자에서 @Value 어노테이션 사용
+
+        public TokenProvider(@Value("${jwt.issuer}") String issuer,
+                             @Value("${jwt.secretKey}") String secretKey) {
+           //@Value 어노테이션으로 applicationl.yml 의 프로퍼티 값 조회
+           this.issuer = issuer;
+           this.secretKey = secretKey;
+        }
+        
+        ```
+      * 토큰 생성, 유효성검사, 토큰에서 정보가져오기 기능을 위한 클래스생성 > `TokenProvier.java`
+      * TokenProvier 테스트 클래스 생성 > `TokenProviderTest.java`
+        ![캡처](https://github.com/ironmask431/springboot3-guide/assets/48856906/96c46c6f-e4c6-4072-8a5b-c5bc96c3de95)
+
+        
+
+        
+
+      
+   
+      
 
    
